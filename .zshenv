@@ -7,6 +7,9 @@ _setup_user_zshenv() {
 
     [[ $(uname) == "Linux" ]] && _setup_linux_user_zshenv
     [[ $(uname) == "Darwin" ]] && _setup_darwin_common_zshenv && _setup_darwin_user_zshenv
+
+    # os-independent environment variables
+    export GOPATH=$HOME/.local/opt/go
 }
 
 _setup_root_zshenv() {
