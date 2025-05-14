@@ -1,6 +1,7 @@
 # let's be extra sure to not accidentally leak any data
 *
 !.config/
+!.config/**
 !.zshenv/
 !.xinitrc/
 !.gitignore
