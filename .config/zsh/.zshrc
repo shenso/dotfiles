@@ -51,9 +51,12 @@ _setup_zsh_completions() {
 
 
 _setup_zsh_bindings() {
+    [[ $(uname) == "Darwin" ]] && local upkey="\e[A" || local upkey="$terminfo[kcuu1]"
+    [[ $(uname) == "Darwin" ]] && local downkey="\e[B" || local downkey="$terminfo[kcud1]"
+
     bindkey -v # vi mode
-    bindkey "$terminfo[kcuu1]" history-search-backward
-    bindkey "$terminfo[kcud1]" history-search-forward
+    bindkey $upkey history-search-backward
+    bindkey $downkey history-search-forward
     export KEYTIMEOUT=1
 }
 
