@@ -19,7 +19,7 @@ _setup_root_zshenv() {
 
 _setup_darwin_common_zshenv() {
     local newpaths="$HOME/.local/bin:/usr/local/bin"
-    if [[ "$(hostname)" == "work-macbook.local" ]]; then
+    if [[ "$(hostname)" == "smith.local" ]]; then
         [ -d $HOME/.local/opt/flutter ] && newpaths="$newpaths:$HOME/.local/opt/flutter/bin"
         [ -d $HOME/.local/opt/google-cloud-sdk ] && newpaths="$newpaths:$HOME/.local/opt/flutter/bin"
     fi
