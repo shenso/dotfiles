@@ -90,6 +90,8 @@ _setup_emacs_cfg_command() {
         local emacs_dir=$HOME/.emacs.d
     elif [[ -v XDG_CONFIG_HOME && -d $XDG_CONFIG_HOME/emacs ]]; then
         local emacs_dir=$XDG_CONFIG_HOME/emacs
+    elif [ -d $HOME/.config/emacs ]; then
+        local emacs_dir=$HOME/.config/emacs
     fi
 
     if [[ -v emacs_dir ]]; then
