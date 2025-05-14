@@ -2,7 +2,7 @@ if [ $(id -u) -eq 0 ]; then
     exit
 fi
 
-SHENSO_XINIT_HOSTS=( "workbook" )
+SHENSO_XINIT_HOSTS=( "plato" )
 SHENSO_WILL_XINIT=0
 
 for target in "$SHENSO_XINIT_HOSTS[@]"; do
