@@ -1,9 +1,41 @@
 _setup_user_zshenv() {
     # sanity check
     if [ $(id -u) -eq 0 ]; then
+        echo "assertion failed: user should not be root" >> /dev/stderr
         exit;
     fi
 
+    [[ $(uname) == "Linux" ]] && _setup_linux_user_zshenv
+    [[ $(uname) == "Darwin" ]] && _setup_darwin_common_zshenv && _setup_darwin_user_zshenv
+}
+
+_setup_root_zshenv() {
+    export ZDOTDIR=$HOME/.config/zsh
+    export ZSH_CACHE_DIR=$HOME/.cache/zsh
+    export ZSH_STATE_DIR=$HOME/.var/zsh
+
+    [[ $(uname) == "Darwin" ]] && _setup_darwin_common_zshenv
+}
+
+_setup_darwin_common_zshenv() {
+    local newpaths="$HOME/.local/bin:/usr/local/bin"
+    if [[ "$(hostname)" == "work-macbook.local" ]]; then
+        [ -d $HOME/.local/opt/flutter ] && newpaths="$newpaths:$HOME/.local/opt/flutter/bin"
+        [ -d $HOME/.local/opt/google-cloud-sdk ] && newpaths="$newpaths:$HOME/.local/opt/flutter/bin"
+    fi
+    [ -d /opt/homebrew/opt/openjdk ] && newpaths="$newpaths:/opt/homebrew/opt/openjdk/bin"
+    [ -d $HOME/.pyenv/shims ] && newpaths="$newpaths:$HOME/.pyenv/shims"
+    [ -d /opt/homebrew ] && newpaths="$newpaths:/opt/homebrew/bin:/opt/homebrew/sbin"
+    export PATH="$newpaths:$PATH"
+}
+
+_setup_darwin_user_zshenv() {
+    export ZDOTDIR=$HOME/.config/zsh
+    export ZSH_CACHE_DIR=$HOME/.cache/zsh
+    export ZSH_STATE_DIR=$HOME/.var/zsh
+}
+
+_setup_linux_user_zshenv() {
     ### XDG Setup
     # Load XDG config paths
     if [ -f $HOME/.config/user-dirs.dirs ]; then
@@ -39,14 +71,8 @@ _setup_user_zshenv() {
     export PYTHON_HISTORY=$XDG_STATE_HOME/python/history
     export PYTHONPYCACHEPREFIX=$XDG_CACHE_HOME/python
     export PYTHONUSERBASE=$XDG_DATA_HOME/python
-    [[ $(uname) == "Linux" ]] && export ICEAUTHORITY=$XDG_CACHE_HOME/ICEauthority
     alias svn="svn --config-dir \"$XDG_CONFIG_HOME\"/subversion"
-}
-
-_setup_root_zshenv() {
-    export ZDOTDIR=$HOME/.config/zsh
-    export ZSH_CACHE_DIR=$HOME/.cache/zsh
-    export ZSH_STATE_DIR=$HOME/.var/zsh
+    export ICEAUTHORITY=$XDG_CACHE_HOME/ICEauthority
 }
 
 [ $(id -u) -eq 0 ] && _setup_root_zshenv || _setup_user_zshenv
