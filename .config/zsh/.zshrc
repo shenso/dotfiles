@@ -1,0 +1,108 @@
+_setup_zsh_theme() {
+    local preferred_theme='shenso'
+    local fallback_theme='walters'
+    
+    if [ -d $ZDOTDIR/themes/$preferred_theme ]; then
+        local theme_dir=$ZDOTDIR/themes/$preferred_theme
+    elif [ -d /etc/zsh/themes/$preferred_theme ]; then
+        local theme_dir=/etc/zsh/themes/$preferred_theme
+    fi
+    
+    if [ -v theme_dir ]; then
+        fpath+=($theme_dir)
+        local target_theme=$preferred_theme
+    else
+        local target_theme=$fallback_theme
+    fi
+    
+    autoload -U promptinit \
+        && promptinit \
+        && prompt $target_theme
+}
+
+
+
+_setup_zsh_history() {
+    setopt histignorealldups share_history
+    # Use XDG_STATE_HOME for history file
+    export HISTFILE=$ZSH_STATE_DIR/history
+    export HISTSIZE=1000
+    export SAVEHIST=1000
+}
+
+
+
+_setup_zsh_completions() {
+    # enable compsys and dump in cache
+    autoload -U compinit && \
+        compinit -d "$ZSH_CACHE_DIR"/zcompdump-$ZSH_VERSION
+    
+    _comp_options+=(globdots)
+    
+    # cache away from home 
+    zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR"/zcompcache
+    # completion settings
+    zstyle ':completion:*' completer _expand _complete
+    zstyle ':completion:*' menu select=2
+    zstyle ':completion:*' history-words
+    zstyle ':completion:*' verbose true
+}
+
+
+
+_setup_zsh_bindings() {
+    bindkey -v # vi mode
+    bindkey "$terminfo[kcuu1]" history-search-backward
+    bindkey "$terminfo[kcud1]" history-search-forward
+    export KEYTIMEOUT=1
+}
+
+
+
+_setup_zsh_preferences() {
+    command -v emacs > /dev/null \
+        && export EDITOR="emacs -nw" \
+            || export EDITOR=vim
+}
+
+
+
+_setup_aliases() {
+    alias ls="ls --color=auto"
+    alias ll="ls -l"
+}
+
+
+
+_setup_dotfiles_command() {
+    alias dotfiles="git --git-dir=\"$HOME/.local/src/shenso-dotfiles\" --work-tree=\"$HOME\""
+    mkdir -p "$HOME/.local/src"
+    if [ ! -d "$HOME/.local/src/shenso-dotfiles" ]; then
+        git init --quiet --bare "$HOME/.local/src/shenso-dotfiles"
+        git --git-dir="$HOME/.local/src/shenso-dotfiles" \
+            --work-tree="$HOME" \
+            config --local status.showUntrackedFiles no
+    fi
+}
+
+
+
+_setup_common_zshrc() {
+    _setup_zsh_theme
+    _setup_zsh_history
+    _setup_zsh_completions
+    _setup_zsh_bindings
+    _setup_zsh_preferences
+    _setup_aliases
+}
+
+_setup_user_zshrc() {
+    _setup_common_zshrc
+    _setup_dotfiles_command
+}
+
+_setup_root_zshrc() {
+    _setup_common_zshrc
+}
+
+[ $(id -u) -eq 0 ] && _setup_root_zshrc || _setup_user_zshrc
