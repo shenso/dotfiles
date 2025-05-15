@@ -36,6 +36,8 @@ _setup_darwin_user_zshenv() {
     export ZDOTDIR=$HOME/.config/zsh
     export ZSH_CACHE_DIR=$HOME/.cache/zsh
     export ZSH_STATE_DIR=$HOME/.var/zsh
+
+    export GIT_CONFIG="$HOME/.config/git/config"
 }
 
 _setup_linux_user_zshenv() {
@@ -76,6 +78,7 @@ _setup_linux_user_zshenv() {
     export PYTHONUSERBASE=$XDG_DATA_HOME/python
     alias svn="svn --config-dir \"$XDG_CONFIG_HOME\"/subversion"
     export ICEAUTHORITY=$XDG_CACHE_HOME/ICEauthority
+    export GIT_CONFIG="$XDG_CONFIG_HOME/git/config"
 }
 
 [ $(id -u) -eq 0 ] && _setup_root_zshenv || _setup_user_zshenv
