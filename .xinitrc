@@ -19,10 +19,4 @@ if [ $(command -v xsecurelock) ]; then
     xfconf-query --channel xfce4-session --property /general/LockCommand --set "xsecurelock"
 fi
 
-if [ -n "${ERRFILE+exists}" ]; then
-    [ -f $ERRFILE ] && mv $ERRFILE $ERRFILE.old
-    exec startxfce4 > $ERRFILE 2>&1
-else
-    exec startxfce
-fi
-
+exec startxfce4
