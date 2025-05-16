@@ -13,11 +13,16 @@ _setup_user_zshenv() {
 }
 
 _setup_root_zshenv() {
+    if [ ! $(id -u) -eq 0 ]; then
+        echo "assertion failed: user expected to be root" >> /dev/stderr
+        exit;
+    fi
+
     export ZDOTDIR=$HOME/.config/zsh
     export ZSH_CACHE_DIR=$HOME/.cache/zsh
     export ZSH_STATE_DIR=$HOME/.var/zsh
 
-    [[ $(uname) == "Darwin" ]] && _setup_darwin_common_zshenv
+    [[ $(uname) == "Darwin" ]] && _setup_darwin_common_zshenv || true
 }
 
 _setup_darwin_common_zshenv() {
@@ -81,7 +86,11 @@ _setup_linux_user_zshenv() {
     export GIT_CONFIG="$XDG_CONFIG_HOME/git/config"
 }
 
-[ $(id -u) -eq 0 ] && _setup_root_zshenv || _setup_user_zshenv
+if [ $(id -u) -eq 0 ]; then
+    _setup_root_zshenv
+else
+    _setup_user_zshenv
+fi
 
 mkdir -p $ZDOTDIR
 mkdir -p $ZSH_CACHE_DIR
