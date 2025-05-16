@@ -3,7 +3,7 @@ prompt_shenso_help () {
 
 prompt_shenso_setup () {
     local newline=$'\n'
-    export PROMPT="%F{027}%1~/%f${newline}%B%F{red}%(?..[%?] )%f%F{156}%(!.#.$)%f%b "
+    export PROMPT="%F{027}%~/%f${newline}%B%F{red}%(?..[%?] )%f%F{156}%(!.#.$)%f%b "
 
     prompt_opts=(cr percent)
 }
