@@ -100,7 +100,7 @@ _setup_emacs_cfg_command() {
     if [[ -v emacs_dir ]]; then
         local git_dir=$HOME/.local/src/emacs.d
 
-        alias emacs-cfg="git --git-dir=\"$git_dir\" --work-tree=\"$emacs_dir\""
+        alias emacs-cfg="git_wrapper --git-dir=\"$git_dir\" --work-tree=\"$emacs_dir\""
         mkdir -p "$HOME/.local/src"
 
         if [ ! -d $git_dir ]; then
@@ -129,6 +129,8 @@ _setup_user_zshrc() {
     _setup_common_zshrc
     _setup_dotfiles_command
     _setup_emacs_cfg_command
+
+    . $ZDOTDIR/commands.sh
 }
 
 _setup_root_zshrc() {
