@@ -9,6 +9,8 @@ for target in "$SHENSO_XINIT_HOSTS[@]"; do
     [[ $(hostname 2>/dev/null) == $target || $HOST == $target ]] && SHENSO_WILL_XINIT=1
 done
 
+[ $(command -v emacs) ] && emacs --daemon > /dev/null
+
 if [ $SHENSO_WILL_XINIT -eq 1 ] && [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
     if [ $(command -v xsecurelock) ]; then
         export XSECURELOCK_XSCREENSAVER_PATH=/usr/libexec/xscreensaver

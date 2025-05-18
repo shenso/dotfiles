@@ -63,8 +63,8 @@ _setup_zsh_bindings() {
 
 
 _setup_zsh_preferences() {
-    command -v emacs > /dev/null \
-        && export EDITOR="emacs -nw" \
+    [ $(command -v emacs) ] \
+        && export EDITOR="emacsclient -nw -a 'emacs -nw'" \
             || export EDITOR=vim
 }
 
@@ -73,6 +73,7 @@ _setup_zsh_preferences() {
 _setup_aliases() {
     alias ls="ls --color=auto"
     alias ll="ls -l"
+    alias emacs="emacsclient -nw -a 'emacs -nw'"
 }
 
 
