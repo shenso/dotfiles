@@ -10,5 +10,13 @@ for target in "$SHENSO_XINIT_HOSTS[@]"; do
 done
 
 if [ $SHENSO_WILL_XINIT -eq 1 ] && [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+    if [ $(command -v xsecurelock) ]; then
+        export XSECURELOCK_XSCREENSAVER_PATH=/usr/libexec/xscreensaver
+        export XSECURELOCK_SAVER=saver_xscreensaver
+        export XSECURELOCK_SHOW_DATETIME=1
+        export XSECURELOCK_SINGLE_AUTH_WINDOW=1
+        export XSECURELOCK_AUTH_TIMEOUT=30
+    fi
+
     exec startx
 fi
