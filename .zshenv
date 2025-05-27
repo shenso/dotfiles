@@ -42,10 +42,14 @@ _setup_darwin_user_zshenv() {
     export ZSH_CACHE_DIR=$HOME/.cache/zsh
     export ZSH_STATE_DIR=$HOME/.var/zsh
 
-    export GIT_CONFIG="$HOME/.config/git/config"
+    export GIT_CONFIG_GLOBAL="$HOME/.config/git/config"
 }
 
 _setup_linux_user_zshenv() {
+    if [ -d $HOME/.local/bin ]; then
+        export PATH="$HOME/.local/bin:$PATH"
+    fi
+
     ### XDG Setup
     # Load XDG config paths
     if [ -f $HOME/.config/user-dirs.dirs ]; then
@@ -83,7 +87,7 @@ _setup_linux_user_zshenv() {
     export PYTHONUSERBASE=$XDG_DATA_HOME/python
     alias svn="svn --config-dir \"$XDG_CONFIG_HOME\"/subversion"
     export ICEAUTHORITY=$XDG_CACHE_HOME/ICEauthority
-    export GIT_CONFIG="$XDG_CONFIG_HOME/git/config"
+    export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config"
 }
 
 if [ $(id -u) -eq 0 ]; then

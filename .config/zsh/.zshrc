@@ -34,7 +34,7 @@ _setup_zsh_history() {
 
 _setup_zsh_completions() {
     # enable compsys and dump in cache
-    autoload -U compinit && \
+    autoload -Uz compinit && \
         compinit -d "$ZSH_CACHE_DIR"/zcompdump-$ZSH_VERSION
     
     _comp_options+=(globdots)
@@ -51,10 +51,29 @@ _setup_zsh_completions() {
 
 
 _setup_zsh_bindings() {
-    [[ $(uname) == "Darwin" ]] && local upkey="\e[A" || local upkey="$terminfo[kcuu1]"
-    [[ $(uname) == "Darwin" ]] && local downkey="\e[B" || local downkey="$terminfo[kcud1]"
+    if [[ $(uname) == "Darwin" ]]; then
+        local upkey="\e[A"
+        local downkey="\e[B"
+    else
+        local upkey="$terminfo[kcuu1]"
+        local downkey="$terminfo[kcud1]"
+    fi
 
     bindkey -v # vi mode
+    # emacs bindings, because im a degenerate who mixes the two
+    bindkey "^F" forward-char
+    bindkey "^B" backward-char
+    bindkey "^A" beginning-of-line
+    bindkey "^E" end-of-line
+    bindkey "^K" kill-line
+    bindkey "^L" clear-screen
+    bindkey "^R" history-incremental-search-backward
+    bindkey "^U" kill-whole-line
+    bindkey "^W" backward-kill-word
+    bindkey "^Y" yank
+    # meta key commands
+    bindkey "^[f" emacs-forward-word
+    bindkey "^[b" emacs-backward-word
 
     bindkey $upkey history-beginning-search-backward
     bindkey $downkey history-beginning-search-forward
@@ -64,9 +83,17 @@ _setup_zsh_bindings() {
 
 
 _setup_zsh_preferences() {
-    [ $(command -v emacs) ] \
-        && export EDITOR="emacsclient -nw -a 'emacs -nw'" \
-            || export EDITOR=vim
+    if [[ $(command -v emacs) ]]; then
+        export EDITOR="emacsclient -nw -a 'emacs -nw'"
+    elif [[ $(command -v vim.tiny) ]]; then
+        export EDITOR=vim.tiny
+    elif [[ $(command -v vi) ]]; then
+        export EDITOR=vi
+    elif [[ $(command -v vim) ]]; then
+        export EDITOR=vim
+    else
+        export EDITOR=nano
+    fi
 }
 
 
@@ -75,6 +102,10 @@ _setup_aliases() {
     alias ls="ls --color=auto"
     alias ll="ls -l"
     alias emacs="emacsclient -nw -a 'emacs -nw'"
+
+    if [[ ! $(command -v vim) ]] && [[ $(command -v vim.tiny) ]]; then
+        alias vim="vim.tiny"
+    fi
 }
 
 
@@ -102,7 +133,7 @@ _setup_emacs_cfg_command() {
     if [[ -v emacs_dir ]]; then
         local git_dir=$HOME/.local/src/emacs.d
 
-        alias emacs-cfg="git_wrapper --git-dir=\"$git_dir\" --work-tree=\"$emacs_dir\""
+        alias emacs-cfg="git --git-dir=\"$git_dir\" --work-tree=\"$emacs_dir\""
         mkdir -p "$HOME/.local/src"
 
         if [ ! -d $git_dir ]; then

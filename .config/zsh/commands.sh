@@ -37,28 +37,5 @@ get_branch_ahead_behind () {
     echo "$cur_branch is $commits_ahead commits ahead of ${other_branch}, $commits_behind behind."
 }
 
-# is this a bad idea? idk
-git_wrapper() {
-    local do_get_ahead_behind=0;
-    for arg in "$@"; do
-        shift
-        if [[ ! "$arg" == --* ]]; then
-            if [[ "$arg" == "ahead-behind" ]]; then
-                do_get_ahead_behind=1
-            else
-                set -- "$@" "$arg"
-            fi
-        else
-            set -- "$@" "$arg"
-        fi
-    done
-
-    if [[ $do_get_ahead_behind -eq 1 ]]; then
-        get_branch_ahead_behind "$@"
-    else
-        command git "$@"
-    fi
-}
-
-alias git="git_wrapper"
+alias git-ahead-behind="get_branch_ahead_behind"
 

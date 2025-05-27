@@ -11,8 +11,8 @@ fi
 . /etc/X11/Xsession
 
 # setup xsecurelock
-if [ $(command -v xsecurelock) ]; then
-    xfconf-query --channel xfce4-session --property /general/LockCommand --set "xsecurelock"
+if [ $(command -v xsecurelock) ] && [ -f "/usr/local/bin/xfce4-xsecurelock" ]; then
+    xfconf-query --channel xfce4-session --property /general/LockCommand --set "xfce4-xsecurelock"
 fi
 
 exec startxfce4
