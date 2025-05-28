@@ -34,6 +34,7 @@ _setup_darwin_common_zshenv() {
     [ -d /opt/homebrew/opt/openjdk ] && newpaths="$newpaths:/opt/homebrew/opt/openjdk/bin"
     [ -d $HOME/.pyenv/shims ] && newpaths="$newpaths:$HOME/.pyenv/shims"
     [ -d /opt/homebrew ] && newpaths="$newpaths:/opt/homebrew/bin:/opt/homebrew/sbin"
+    [ -d /Applications/Emacs.app/Contents/MacOS ] && newpaths="$newpaths:/Applications/Emacs.app/Contents/MacOS/bin-arm64-11"
     export PATH="$newpaths:$PATH"
 }
 
